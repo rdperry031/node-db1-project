@@ -1,7 +1,6 @@
-const { getById, getAll } = require("./accounts-model")
 const Account = require('./accounts-model')
 
- const yup = require('yup')
+//  const yup = require('yup')
 
 //  const accountSchema = yup.object().shape({
 //    name: yup
