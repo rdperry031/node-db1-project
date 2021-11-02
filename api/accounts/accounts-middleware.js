@@ -1,44 +1,37 @@
 const Account = require('./accounts-model')
 
-//  const yup = require('yup')
-
-//  const accountSchema = yup.object().shape({
-//    name: yup
-//     .string()
-//     .required()
-//     .trim(),
-//    budget: yup
-//    .number()
-//    .positive() 
-//    .required()
-//  })
-
-
 exports.checkAccountPayload = async(req, res, next) => {
-  // DO YOUR MAGIC
-  // try{
-  //   const validated = accountSchema.validate(
-  //     req.body, { strict: true, stripUnknown: true }
-  //   )
-  //   req.body = validated
-  //   next()
-  // }catch(err){
-  //   next(err)
-  // }
+  try{
+    const { name, budget } = req.body
+    if( !name || budget === undefined){
+      next({ status: 400, message: 'Name and budget are required' })
+    }else if(typeof name !== 'string'){
+      next({ status: 400, message: 'name must be a string'})
+    }else if (name.trim().length < 3 || name.trim().length> 100){
+      next({ status: 400, message: 'name must be between 3 and 100'})
+    }else if(typeof budget !== 'number' || isNaN(budget)){
+      next({ status:400, message: 'must be a number'})
+    }else if(budget < 0 || budget > 1000000){
+      next({ status:400, message: 'budget is too large or too small'})
+    }else{
+      next()
+    }
+  }catch(err){
+    next(err)
+  }
 }
 
 exports.checkAccountNameUnique = async(req, res, next) => {
-  // DO YOUR MAGIC
-  // try{
-  //   const accounts = await getAll()
-  //   if(accounts.find( account => account.name === req.body.name.trim())){
-  //     next({ status: 400, message: 'Name already exists'})
-  //   }else{
-  //     next()
-  //   }
-  // }catch(err){
-  //   next(err)
-  // }
+  try{
+    const accounts = await Account.getAll()
+    if(accounts.find( account => account.name === req.body.name.trim())){
+      next({ status: 400, message: 'Name is taken'})
+    }else{
+      next()
+    }
+  }catch(err){
+    next(err)
+  }
 }
 
 

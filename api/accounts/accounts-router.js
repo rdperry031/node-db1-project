@@ -17,21 +17,11 @@ router.get('/:id', md.checkAccountId, async (req, res, next) => {
   res.status(200).json(req.account) 
 })
 
-// router.post('/', (req, res, next) => {
-  
-// })
-
-// router.put('/:id', (req, res, next) => {
-  
-// });
-
-// router.delete('/:id', (req, res, next) => {
-  
-// })
-
-// router.use((err, req, res, next) => { 
-  
-// }) 
+router.post('/', md.checkAccountPayload, md.checkAccountNameUnique, (req, res, next) => {
+  Account.create({ name: req.body.name.trim(), budget: req.body.budget})
+    .then(account => res.status(201).json(account))
+    .catch(next);
+})
 
 router.use(( err, req, res, next ) =>{
   res.status(err.status || 500).json({
